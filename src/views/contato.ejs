@@ -1,0 +1,106 @@
+<%- include('includes/head') %>
+<%- include('includes/nav') %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-2"></div>
+
+    <div class="col-lg-8 my-3">
+      <h1 class="text-center">Contato</h1>
+      <p class="text-center lead">Crie ou edite seu contato abaixo.</p>
+
+      <%- include('includes/messages') %>
+
+      <% if(contato._id) { %>
+      <form action="/contato/edit/<%= contato._id %>" method="POST" id="contatoForm">
+      <% } else { %>
+      <form action="/contato/register" method="POST" id="contatoForm">
+      <% } %>
+        <input type="hidden" name="_csrf" value=<%= csrfToken %>>
+        
+        <div class="form-group">
+          <label>Nome</label>
+          <input 
+            value="<%= contato.nome %>" 
+            type="text" 
+            class="form-control" 
+            name="nome"
+            maxlength="100" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Sobrenome</label>
+          <input 
+            value="<%= contato.sobrenome %>" 
+            type="text" 
+            class="form-control" 
+            name="sobrenome"
+            maxlength="100" 
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input 
+            value="<%= contato.email %>" 
+            type="email" 
+            class="form-control" 
+            name="email"
+            maxlength="150" 
+            placeholder="exemplo@gmail.com"
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Telefone</label>
+          <input 
+            value="<%= contato.telefone %>" 
+            type="tel" 
+            class="form-control" 
+            name="telefone"
+            id="telefone"
+            pattern="\([1-9]{2}\) [0-9]{4,5}-[0-9]{4}" 
+            maxlength="15" 
+            placeholder="(99) 99999-9999"
+          >
+          <small class="form-text text-muted">Digite o número no formato: (XX) XXXXX-XXXX</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+
+    </div>
+    
+    <div class="col-lg-2"></div>
+  </div>
+</div>
+
+<%- include('includes/footer') %>
+
+<script>
+  // Função para formatar o telefone conforme o usuário digita
+  document.getElementById('telefone').addEventListener('input', function(event) {
+    let phone = event.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    if (phone.length > 10) {
+      phone = phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (phone.length > 5) {
+      phone = phone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    } else if (phone.length > 2) {
+      phone = phone.replace(/(\d{2})(\d{1,4})/, '($1) $2');
+    }
+    event.target.value = phone; // Atualiza o valor do campo
+  });
+
+  // Validação para garantir que o usuário preencha ao menos um campo (email ou telefone)
+  document.getElementById('contatoForm').addEventListener('submit', function(event) {
+    const email = document.querySelector('[name="email"]').value;
+    const telefone = document.querySelector('[name="telefone"]').value;
+
+    if (!email && !telefone) {
+      event.preventDefault(); // Impede o envio do formulário
+      alert('Por favor, preencha ao menos um dos campos: email ou telefone.');
+    }
+  });
+</script>

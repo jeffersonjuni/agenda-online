@@ -1,0 +1,5 @@
+@media (max-width: 768px) {
+    .form-cadastro, .form-login {
+      margin-bottom: 30px;
+    }
+  }

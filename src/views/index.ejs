@@ -1,0 +1,76 @@
+<%- include('includes/head') %> 
+<%- include('includes/nav') %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 my-3">
+      <h1 class="text-center">Agenda</h1>
+      <p class="text-center lead">Seus contatos estão abaixo</p>
+
+      <%- include('includes/messages') %>
+
+      <% if(contatos.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th>Nome</th>
+              <th>Sobrenome</th>
+              <th>Telefone</th>
+              <th>Email</th>
+              <th>Editar</th>
+              <th>Excluir</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% contatos.forEach(contato => { %>
+            <tr>
+              <td><%= contato.nome %></td>
+              <td><%= contato.sobrenome %></td>
+              <td><%= contato.telefone %></td>
+              <td><%= contato.email %></td>
+              <td><a href="/contato/index/<%= contato._id %>">Editar</a></td>
+              <td><a href="#" class="text-danger" data-toggle="modal" data-target="#confirmDeleteModal" data-id="<%= contato._id %>">Excluir</a></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+        <p class="text-center lead">Não existem contatos na sua agenda.</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmação de Exclusão</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Você tem certeza de que deseja excluir este contato?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <a href="#" id="confirmDeleteLink" class="btn btn-danger">Excluir</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('includes/footer') %>
+
+<script>
+  $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+    const button = $(event.relatedTarget);
+    const id = button.data('id');
+    const link = '/contato/delete/' + id;
+    $('#confirmDeleteLink').attr('href', link);
+  });
+</script>
